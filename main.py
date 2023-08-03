@@ -1,5 +1,6 @@
 import logging
 from fastapi import FastAPI, Header, HTTPException, Depends, BackgroundTasks
+from fastapi.staticfiles import StaticFiles
 import paramiko
 import os
 from dotenv import load_dotenv
@@ -17,6 +18,8 @@ PASSWORD = os.getenv("SSH_PASSWORD")
 FAST_API_KEY = os.getenv("FAST_API_KEY")
 
 app = FastAPI()
+
+app.mount("/", StaticFiles(directory="static"), name="static")
 
 
 def verify_api_key(x_api_key: str = Header(...)):
