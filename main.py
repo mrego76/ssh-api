@@ -1,6 +1,6 @@
 import logging
 from fastapi import FastAPI, Header, HTTPException, Depends, BackgroundTasks
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import PlainTextResponse
 import paramiko
 import os
 from dotenv import load_dotenv
@@ -18,8 +18,6 @@ PASSWORD = os.getenv("SSH_PASSWORD")
 FAST_API_KEY = os.getenv("FAST_API_KEY")
 
 app = FastAPI()
-
-app.mount("/", StaticFiles(directory="static"), name="static")
 
 
 def verify_api_key(x_api_key: str = Header(...)):
@@ -45,3 +43,10 @@ def list_directory(
 ):
     background_tasks.add_task(run_command)
     return {"result": "Command is running in the background"}
+
+
+@app.get("/robots.txt")
+def read_robots_txt():
+    content = """User-agent: *
+Disallow: /"""
+    return PlainTextResponse(content)
