@@ -4,6 +4,7 @@ from fastapi.responses import PlainTextResponse
 import paramiko
 import os
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
@@ -16,6 +17,11 @@ PORT = os.getenv("SSH_PORT")
 USERNAME = os.getenv("SSH_USERNAME")
 PASSWORD = os.getenv("SSH_PASSWORD")
 FAST_API_KEY = os.getenv("FAST_API_KEY")
+
+
+class RequestParams(BaseModel):
+    message: str
+
 
 app = FastAPI()
 
@@ -37,12 +43,22 @@ def run_command(command="ls"):
     return result
 
 
-@app.get("/list-directory")
-def list_directory(
+@app.get("/hello")
+def hello(
     background_tasks: BackgroundTasks, api_key: str = Depends(verify_api_key)
 ):
     background_tasks.add_task(run_command)
-    return {"result": "Command is running in the background"}
+    return {"result": "Hello World"}
+
+
+@app.post("/hello")
+def hello(
+    request: RequestParams,
+    background_tasks: BackgroundTasks,
+    api_key: str = Depends(verify_api_key),
+):
+    background_tasks.add_task(run_command, request.message)
+    return {"result": "Hello World"}
 
 
 @app.get("/robots.txt")
