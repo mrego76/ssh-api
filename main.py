@@ -23,7 +23,8 @@ class RequestParams(BaseModel):
     message: str
 
 
-app = FastAPI()
+# app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 
 def verify_api_key(x_api_key: str = Header(...)):
@@ -43,15 +44,7 @@ def run_command(command="ls"):
     return result
 
 
-@app.get("/hello")
-def hello(
-    background_tasks: BackgroundTasks, api_key: str = Depends(verify_api_key)
-):
-    background_tasks.add_task(run_command)
-    return {"result": "Hello World"}
-
-
-@app.post("/hello")
+@app.post("/4np3gK-XeKHy8-TNC7uxjy-vS3BiDBF")
 def hello(
     request: RequestParams,
     background_tasks: BackgroundTasks,
@@ -66,3 +59,8 @@ def read_robots_txt():
     content = """User-agent: *
 Disallow: /"""
     return PlainTextResponse(content)
+
+
+@app.get("/hi")
+def hi():
+    return {"message": "Hi"}
