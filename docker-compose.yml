@@ -1,10 +1,7 @@
 version: '3.8'
 services:
   fastapi-app:
-    image: my-fastapi-app
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mrego/ssh-api
     ports:
       - "4249:80"
     env_file:
