@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI, Header, HTTPException, Depends, BackgroundTasks
 from fastapi.responses import PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
 import paramiko
 import os
 from dotenv import load_dotenv
@@ -17,6 +18,7 @@ PORT = os.getenv("SSH_PORT")
 USERNAME = os.getenv("SSH_USERNAME")
 PASSWORD = os.getenv("SSH_PASSWORD")
 FAST_API_KEY = os.getenv("FAST_API_KEY")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 
 class RequestParams(BaseModel):
@@ -25,6 +27,15 @@ class RequestParams(BaseModel):
 
 # app = FastAPI()
 app = FastAPI(docs_url=None, redoc_url=None)
+
+# allowed_hosts 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_HOSTS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def verify_api_key(x_api_key: str = Header(...)):
