@@ -73,5 +73,11 @@ Disallow: /"""
 
 
 @app.get("/hi")
-def hi():
-    return {"message": "Hi"}
+async def hi():
+    return {"message": "hi"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=4249, reload=True)
